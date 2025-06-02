@@ -4,10 +4,13 @@ from rest_framework.permissions import AllowAny
 from ..serializers import (
     TourExcursionStatsSerializer,
     EmployeeRatingSerializer,
-    TourPriceComparisonSerializer, ClientPavelSerializer,
+    TourPriceComparisonSerializer,
+    ClientPavelSerializer,
+    MonthlyPaymentStatsSerializer,
+    EmployeePerformanceSerializer
 )
 from django.db.models.functions import (
-    Round, ExtractYear, ExtractMonth, Coalesce, Concat)
+    Round, ExtractYear, ExtractMonth, Coalesce, Concat, TruncMonth)
 from django.db.models import (
     Subquery, OuterRef, Count,
     Avg, Sum, Case, When, IntegerField,
@@ -15,7 +18,7 @@ from django.db.models import (
 )
 from ..models import (
     Client, Booking, Tour, TourExcursion, Review, Employee,
-    Excursion, TourFestival
+    Excursion, TourFestival, Payment
 )
 
 
@@ -58,7 +61,6 @@ class TourWithPaidExcursionsView(APIView):
             paid_percent__gt=30
         ).order_by('-paid_percent')
 
-        # Сериализуем результаты
         serializer = TourExcursionStatsSerializer(tours, many=True)
         return Response(serializer.data)
 
@@ -84,7 +86,6 @@ class EmployeeRatingsView(APIView):
             ),
             avg_rating=Avg('booking__client__review__rating')
         ).annotate(
-            # Рассчитываем количество туров в высокий сезон
             high_season_tours=Coalesce(
                 Count(
                     Case(
@@ -95,7 +96,6 @@ class EmployeeRatingsView(APIView):
                 ),
                 0
             ),
-            # Рассчитываем эффективность по формуле
             efficiency_score=(
                     F('confirmed_bookings') * 0.4 +
                     F('high_season_tours') * 0.3 +
@@ -105,7 +105,6 @@ class EmployeeRatingsView(APIView):
             confirmed_bookings__gt=0
         ).order_by('-efficiency_score')
 
-        # Сериализуем результаты
         serializer = EmployeeRatingSerializer(employees, many=True)
         return Response(serializer.data)
 
@@ -114,7 +113,6 @@ class FestivalTourPriceComparisonView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        # 1. Туры с популярными фестивалями (средняя популярность >= 4)
         festival_tours_stats = Tour.objects.filter(
             tourfestival__festival__popularity__gte=4
         ).annotate(
@@ -122,19 +120,17 @@ class FestivalTourPriceComparisonView(APIView):
         ).filter(
             avg_popularity__gte=4
         ).aggregate(
-            tour_count=Count('tour_id'),  # Используем tour_id вместо id
+            tour_count=Count('tour_id'),
             avg_price=Round(Avg('price'), 2)
         )
 
-        # 2. Туры без фестивалей
         non_festival_tours_stats = Tour.objects.exclude(
-            tour_id__in=TourFestival.objects.values('tour__tour_id')  # Используем tour__tour_id
+            tour_id__in=TourFestival.objects.values('tour__tour_id')
         ).aggregate(
-            tour_count=Count('tour_id'),  # Используем tour_id вместо id
+            tour_count=Count('tour_id'),
             avg_price=Round(Avg('price'), 2)
         )
 
-        # 3. Формируем итоговый результат
         results = [
             {
                 'category': 'Festival Tours',
@@ -149,3 +145,154 @@ class FestivalTourPriceComparisonView(APIView):
         ]
 
         return Response(results)
+
+
+class MonthlyPaymentStatsView(APIView):
+    permission_classes = [AllowAny]
+    http_method_names = ['get']
+
+    def get(self, request):
+        monthly_deposits = Payment.objects.filter(
+            is_deposit=True
+        ).annotate(
+            month=TruncMonth('payment_date')
+        ).values('month').annotate(
+            deposit_amount=Sum('amount')
+        ).order_by('month')
+
+        monthly_full_payments = Payment.objects.filter(
+            is_deposit=False
+        ).annotate(
+            month=TruncMonth('payment_date')
+        ).values('month').annotate(
+            full_payment_amount=Sum('amount')
+        ).order_by('month')
+
+        all_months = Payment.objects.annotate(
+            month=TruncMonth('payment_date')
+        ).values_list('month', flat=True).distinct().order_by('month')
+
+        results = []
+        for month in all_months:
+            deposit = next(
+                (item['deposit_amount'] for item in monthly_deposits if item['month'] == month),
+                0
+            )
+            full_payment = next(
+                (item['full_payment_amount'] for item in monthly_full_payments if item['month'] == month),
+                0
+            )
+
+            results.append({
+                'month': month.strftime('%Y-%m'),
+                'deposits': deposit,
+                'full_payments': full_payment,
+                'total_income': deposit + full_payment
+            })
+
+        serializer = MonthlyPaymentStatsSerializer(results, many=True)
+        return Response(serializer.data)
+
+
+class EmployeePerformanceView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        employees = Employee.objects.filter(
+            position="Agent"
+        ).annotate(
+            employee_name=Concat('first_name', Value(' '), 'last_name'),
+            total_bookings=Count('booking'),
+            total_sales=Sum('booking__total_price'),
+            avg_check=Avg('booking__total_price'),
+            confirmation_rate=100.0 * Sum(
+                Case(
+                    When(booking__status='Confirmed', then=1),
+                    default=0,
+                    output_field=FloatField()
+                )
+            ) / Count('booking'),
+            avg_processing_time=Avg(
+                F('booking__booking_date') - F('booking__client__visa__application_date')
+            )
+        ).filter(
+            total_bookings__gt=0
+        )
+
+        ranked_employees = []
+        for emp in employees.order_by('-total_sales'):
+            emp_data = {
+                'employee_name': emp.employee_name,
+                'total_bookings': emp.total_bookings,
+                'total_sales': float(emp.total_sales or 0),
+                'avg_check': round(float(emp.avg_check or 0), 2),
+                'confirmation_rate': round(float(emp.confirmation_rate or 0), 2),
+            }
+
+            emp_data['sales_rank'] = Employee.objects.filter(
+                position="Agent",
+                booking__isnull=False
+            ).annotate(
+                total_sales=Sum('booking__total_price')
+            ).filter(
+                total_sales__gt=emp.total_sales
+            ).count() + 1
+
+            emp_data['check_rank'] = Employee.objects.filter(
+                position="Agent",
+                booking__isnull=False
+            ).annotate(
+                avg_check=Avg('booking__total_price')
+            ).filter(
+                avg_check__gt=emp.avg_check
+            ).count() + 1
+
+            emp_data['rate_rank'] = Employee.objects.filter(
+                position="Agent",
+                booking__isnull=False
+            ).annotate(
+                rate=100.0 * Sum(
+                    Case(
+                        When(booking__status='Confirmed', then=1),
+                        default=0,
+                        output_field=FloatField()
+                    )
+                ) / Count('booking')
+            ).filter(
+                rate__gt=emp.confirmation_rate
+            ).count() + 1
+
+            emp_data['time_rank'] = Employee.objects.filter(
+                position="Agent",
+                booking__isnull=False
+            ).annotate(
+                proc_time=Avg(
+                    F('booking__booking_date') - F('booking__client__visa__application_date')
+                )
+            ).filter(
+                proc_time__lt=emp.avg_processing_time
+            ).count() + 1
+
+            emp_data['composite_rank'] = (
+                    emp_data['sales_rank'] +
+                    emp_data['check_rank'] +
+                    emp_data['rate_rank'] +
+                    emp_data['time_rank']
+            )
+
+            if emp_data['composite_rank'] <= 10:
+                emp_data['performance_category'] = 'Top Performer'
+            elif emp_data['composite_rank'] <= 20:
+                emp_data['performance_category'] = 'High Performer'
+            elif emp_data['composite_rank'] <= 30:
+                emp_data['performance_category'] = 'Average Performer'
+            else:
+                emp_data['performance_category'] = 'Needs Improvement'
+
+            ranked_employees.append(emp_data)
+
+
+        ranked_employees.sort(key=lambda x: x['composite_rank'])
+
+        serializer = EmployeePerformanceSerializer(ranked_employees, many=True)
+        return Response(serializer.data)

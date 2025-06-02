@@ -229,3 +229,18 @@ class TourPriceComparisonSerializer(serializers.Serializer):
     category = serializers.CharField()
     tour_count = serializers.IntegerField()
     avg_price = serializers.FloatField()
+
+class MonthlyPaymentStatsSerializer(serializers.Serializer):
+    month = serializers.CharField()
+    deposits = serializers.DecimalField(max_digits=10, decimal_places=2)
+    full_payments = serializers.DecimalField(max_digits=10, decimal_places=2)
+    total_income = serializers.DecimalField(max_digits=10, decimal_places=2)
+
+class EmployeePerformanceSerializer(serializers.Serializer):
+    employee_name = serializers.CharField()
+    total_bookings = serializers.IntegerField()
+    total_sales = serializers.DecimalField(max_digits=10, decimal_places=2)
+    avg_check = serializers.DecimalField(max_digits=10, decimal_places=2)
+    confirmation_rate = serializers.DecimalField(max_digits=5, decimal_places=2)
+    composite_rank = serializers.IntegerField()
+    performance_category = serializers.CharField()

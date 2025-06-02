@@ -33,6 +33,7 @@ from .views import (
 from .reports.api_views import (
     PavelFriendsView, FestivalTourPriceComparisonView,
     EmployeeRatingsView, TourWithPaidExcursionsView,
+    MonthlyPaymentStatsView, EmployeePerformanceView
 )
 
 router = DefaultRouter()
@@ -60,13 +61,15 @@ router.register(r'tour-hotels', TourHotelViewSet)
 router.register(r'tour-regions', TourRegionViewSet)
 router.register(r'tour-agencies', TourToAgencyViewSet)
 router.register(r'tour-transports', TourTransportViewSet)
-router.register(r'hotel-occupancy', HotelOccupancyViewSet, basename='hotel-occupancy')
+router.register(r'hotel-occupancy', HotelOccupancyViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
 
-    path('pavel/friends/', PavelFriendsView.as_view(), name='pavel-friends'),
-    path('tours/with-paid-excursions/', TourWithPaidExcursionsView.as_view(), name='tours-with-paid-excursions'),
-    path('festivals/tours/price-comparison', FestivalTourPriceComparisonView.as_view(), name='festival-comparsion'),
-    path('employee/ratings/', EmployeeRatingsView.as_view(), name='employee-ratings'),
+    path('pavel/friends/', PavelFriendsView.as_view()),
+    path('tours/with-paid-excursions/', TourWithPaidExcursionsView.as_view()),
+    path('festivals/tours/price-comparison', FestivalTourPriceComparisonView.as_view()),
+    path('employee/ratings/', EmployeeRatingsView.as_view()),
+    path('monthly-stats/', MonthlyPaymentStatsView.as_view()),
+    path('employees-performance/', EmployeePerformanceView.as_view())
 ]
