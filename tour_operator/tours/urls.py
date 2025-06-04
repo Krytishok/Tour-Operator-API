@@ -62,7 +62,6 @@ router.register(r'tour-hotels', TourHotelViewSet)
 router.register(r'tour-regions', TourRegionViewSet)
 router.register(r'tour-agencies', TourToAgencyViewSet)
 router.register(r'tour-transports', TourTransportViewSet)
-router.register(r'hotel-occupancy', HotelOccupancyViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
