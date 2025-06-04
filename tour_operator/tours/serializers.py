@@ -244,3 +244,39 @@ class EmployeePerformanceSerializer(serializers.Serializer):
     confirmation_rate = serializers.DecimalField(max_digits=5, decimal_places=2)
     composite_rank = serializers.IntegerField()
     performance_category = serializers.CharField()
+
+
+class ClientDetailSerializer(serializers.ModelSerializer):
+    client_name = serializers.CharField(read_only=True)
+    total_bookings = serializers.IntegerField(read_only=True)
+    last_booking_date = serializers.CharField(read_only=True)
+    last_tour = serializers.CharField(read_only=True)
+    last_rating = serializers.CharField(read_only=True)
+    last_comment = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Client
+        fields = [
+            'client_id',
+            'client_name',
+            'email',
+            'phone',
+            'total_bookings',
+            'last_booking_date',
+            'last_tour',
+            'last_rating',
+            'last_comment'
+        ]
+
+
+class TourThemeStatsSerializer(serializers.Serializer):
+    theme = serializers.CharField()
+    tours_count = serializers.IntegerField()
+    avg_price = serializers.FloatField()
+    avg_difficulty = serializers.FloatField()
+    cheapest_tour = serializers.FloatField()
+    most_expensive_tour = serializers.FloatField()
+    total_revenue = serializers.FloatField()
+    bookings_count = serializers.IntegerField()
+    avg_rating = serializers.CharField()
+    most_popular_tour = serializers.CharField()

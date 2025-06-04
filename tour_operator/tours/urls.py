@@ -33,7 +33,8 @@ from .views import (
 from .reports.api_views import (
     PavelFriendsView, FestivalTourPriceComparisonView,
     EmployeeRatingsView, TourWithPaidExcursionsView,
-    MonthlyPaymentStatsView, EmployeePerformanceView
+    MonthlyPaymentStatsView, EmployeePerformanceView,
+    ClientListWithDetailsView, TourThemeAnalysisView
 )
 
 router = DefaultRouter()
@@ -71,5 +72,7 @@ urlpatterns = [
     path('festivals/tours/price-comparison', FestivalTourPriceComparisonView.as_view()),
     path('employee/ratings/', EmployeeRatingsView.as_view()),
     path('monthly-stats/', MonthlyPaymentStatsView.as_view()),
-    path('employees-performance/', EmployeePerformanceView.as_view())
+    path('employees-performance/', EmployeePerformanceView.as_view()),
+    path('clients-with-details/', ClientListWithDetailsView.as_view()),
+    path('tour-theme-analysis/', TourThemeAnalysisView.as_view())
 ]

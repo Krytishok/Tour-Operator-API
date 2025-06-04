@@ -1,24 +1,27 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+from datetime import timedelta
 from ..serializers import (
     TourExcursionStatsSerializer,
     EmployeeRatingSerializer,
     TourPriceComparisonSerializer,
     ClientPavelSerializer,
     MonthlyPaymentStatsSerializer,
-    EmployeePerformanceSerializer
+    EmployeePerformanceSerializer,
+    ClientDetailSerializer,
+    TourThemeStatsSerializer
 )
 from django.db.models.functions import (
-    Round, ExtractYear, ExtractMonth, Coalesce, Concat, TruncMonth)
+    Round, ExtractDay, ExtractMonth, Coalesce, Concat, TruncMonth)
 from django.db.models import (
     Subquery, OuterRef, Count,
     Avg, Sum, Case, When, IntegerField,
-    F, Value, Q, Min, Max, FloatField, CharField
+    F, Value, Q, Min, Max, FloatField, CharField, ExpressionWrapper
 )
 from ..models import (
     Client, Booking, Tour, TourExcursion, Review, Employee,
-    Excursion, TourFestival, Payment
+    Excursion, TourFestival, Payment, TourTransport, TransportProvider, TourHotel
 )
 
 
@@ -296,3 +299,120 @@ class EmployeePerformanceView(APIView):
 
         serializer = EmployeePerformanceSerializer(ranked_employees, many=True)
         return Response(serializer.data)
+
+
+class ClientListWithDetailsView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        last_booking_subquery = Booking.objects.filter(
+            client_id=OuterRef('pk')
+        ).order_by('-booking_date').values('booking_date')[:1]
+
+        last_tour_subquery = Tour.objects.filter(
+            booking__client_id=OuterRef('pk')
+        ).order_by('-booking__booking_date').values('name')[:1]
+
+        last_rating_subquery = Review.objects.filter(
+            client_id=OuterRef('pk')
+        ).order_by('-review_date').values('rating')[:1]
+
+        last_comment_subquery = Review.objects.filter(
+            client_id=OuterRef('pk')
+        ).order_by('-review_date').values('comment')[:1]
+
+        clients = Client.objects.annotate(
+            client_name=Concat('first_name', Value(' '), 'last_name'),
+            total_bookings=Count('booking'),
+            last_booking_date=Coalesce(
+                Subquery(last_booking_subquery),
+                Value('Нет бронирований', output_field=CharField()),
+                output_field=CharField()
+            ),
+            last_tour=Coalesce(
+                Subquery(last_tour_subquery),
+                Value('Не бронировал', output_field=CharField()),
+                output_field=CharField()
+            ),
+            last_rating=Coalesce(
+                Subquery(last_rating_subquery),
+                Value('Нет оценки', output_field=CharField()),
+                output_field=CharField()
+            ),
+            last_comment=Coalesce(
+                Subquery(last_comment_subquery),
+                Value('Нет отзыва', output_field=CharField()),
+                output_field=CharField()
+            )
+        ).filter(
+            booking__isnull=False
+        ).order_by(
+            '-booking__booking_date'
+        ).distinct()[:5]
+
+        serializer = ClientDetailSerializer(clients, many=True)
+        return Response(serializer.data)
+
+
+class TourThemeAnalysisView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        most_popular_subquery = Tour.objects.filter(
+            theme=OuterRef('theme')
+        ).annotate(
+            bookings_count=Count('booking')
+        ).order_by('-bookings_count').values('name')[:1]
+
+        theme_stats = Tour.objects.filter(
+            theme__isnull=False
+        ).values('theme').annotate(
+            tours_count=Count('tour_id', distinct=True),
+            avg_price=Avg('price'),
+            avg_difficulty=Avg('difficulty_level'),
+            cheapest_tour=Min('price'),
+            most_expensive_tour=Max('price'),
+            total_revenue=Sum(
+                'booking__total_price',
+                filter=~Q(booking__status='Cancelled')
+            ),
+            bookings_count=Coalesce(
+                Count(
+                    'booking',
+                    filter=~Q(booking__status='Cancelled'),
+                    distinct=True
+                ),
+                0
+            ),
+            avg_rating=Coalesce(
+                Round(Avg('review__rating'), 1, output_field=CharField()),
+                Value("Нет рейтинга", output_field=CharField())
+            ),
+            most_popular_tour=Coalesce(
+                Subquery(most_popular_subquery),
+                Value("Нет данных", output_field=CharField())
+            )
+        ).order_by('-bookings_count')
+
+        results = []
+        for stat in theme_stats:
+
+            results.append({
+                'theme': stat['theme'],
+                'tours_count': stat['tours_count'],
+                'avg_price': round(float(stat['avg_price'] or 0), 2),
+                'avg_difficulty': round(float(stat['avg_difficulty'] or 0), 1),
+                'cheapest_tour': round(float(stat['cheapest_tour'] or 0), 2),
+                'most_expensive_tour': round(float(stat['most_expensive_tour'] or 0), 2),
+                'total_revenue': round(float(stat['total_revenue'] or 0), 2),
+                'bookings_count': stat['bookings_count'],
+                'avg_rating': stat['avg_rating'],
+                'most_popular_tour': stat['most_popular_tour']
+            })
+
+        serializer = TourThemeStatsSerializer(results, many=True)
+        return Response(serializer.data)
+
+
+
+

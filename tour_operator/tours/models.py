@@ -43,6 +43,7 @@ class Tour(models.Model):
     season = models.CharField(max_length=50)
     difficulty_level = models.IntegerField()
     is_active = models.BooleanField(default=True)
+    theme = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
@@ -150,6 +151,7 @@ class Excursion(models.Model):
     duration_hours = models.IntegerField()
     guide_language = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    location = models.ForeignKey(ChinaCity, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.name
@@ -347,5 +349,5 @@ class HotelOccupancy(models.Model):
     avg_tour_difficulty = models.DecimalField(max_digits=5, decimal_places=2)
 
     class Meta:
-        managed = False  # Это представление из SQL, не управляется Django
+        managed = False
         db_table = 'HotelOccupancy'
