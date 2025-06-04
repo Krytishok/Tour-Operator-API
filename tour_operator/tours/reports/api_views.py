@@ -27,7 +27,6 @@ from ..models import (
 
 class PavelFriendsView(APIView):
     permission_classes = [AllowAny]
-    serializer_class = ClientPavelSerializer
     def get(self, request):
         client_tours = Booking.objects.filter(client_id=1).values('tour_id')
 

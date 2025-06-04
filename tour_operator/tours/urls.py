@@ -66,10 +66,10 @@ router.register(r'tour-transports', TourTransportViewSet)
 urlpatterns = [
     path('', include(router.urls)),
 
-    path('pavel/friends/', PavelFriendsView.as_view()),
-    path('tours/with-paid-excursions/', TourWithPaidExcursionsView.as_view()),
-    path('festivals/tours/price-comparison', FestivalTourPriceComparisonView.as_view()),
-    path('employee/ratings/', EmployeeRatingsView.as_view()),
+    path('pavel-friends/', PavelFriendsView.as_view()),
+    path('tours-with-paid-excursions/', TourWithPaidExcursionsView.as_view()),
+    path('festivals-tours-price-comparison', FestivalTourPriceComparisonView.as_view()),
+    path('employee-ratings/', EmployeeRatingsView.as_view()),
     path('monthly-stats/', MonthlyPaymentStatsView.as_view()),
     path('employees-performance/', EmployeePerformanceView.as_view()),
     path('clients-with-details/', ClientListWithDetailsView.as_view()),
