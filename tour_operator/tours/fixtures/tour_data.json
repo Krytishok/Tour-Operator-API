@@ -1,5 +1,565 @@
 [
   {
+    "model": "tours.Client",
+    "pk": 1,
+    "fields": {
+      "first_name": "Павел",
+      "last_name": "Месенев",
+      "email": "ivan.petrov@example.com",
+      "phone": "+79161234567",
+      "passport_data": "1234 567890",
+      "registration_date": "2023-01-15",
+      "preferred_language": "Russian"
+    }
+  },
+  {
+    "model": "tours.Client",
+    "pk": 2,
+    "fields": {
+      "first_name": "Андрей",
+      "last_name": "Сущенко",
+      "email": "elena.smirnova@example.com",
+      "phone": "+79169876543",
+      "passport_data": "9876 543210",
+      "registration_date": "2023-02-20",
+      "preferred_language": "English"
+    }
+  },
+  {
+    "model": "tours.Client",
+    "pk": 3,
+    "fields": {
+      "first_name": "Алексей",
+      "last_name": "Козлов",
+      "email": "alex.kozlov@example.com",
+      "phone": "+79167778899",
+      "passport_data": "4567 890123",
+      "registration_date": "2023-03-10",
+      "preferred_language": "Russian"
+    }
+  },
+  {
+    "model": "tours.Client",
+    "pk": 4,
+    "fields": {
+      "first_name": "Ольга",
+      "last_name": "Иванова",
+      "email": "olga.ivanova@example.com",
+      "phone": "+79165554433",
+      "passport_data": "6543 210987",
+      "registration_date": "2023-04-05",
+      "preferred_language": "Chinese"
+    }
+  },
+  {
+    "model": "tours.Client",
+    "pk": 5,
+    "fields": {
+      "first_name": "Дмитрий",
+      "last_name": "Соколов",
+      "email": "dmitry.sokolov@example.com",
+      "phone": "+79163332211",
+      "passport_data": "7890 123456",
+      "registration_date": "2023-05-12",
+      "preferred_language": "Russian"
+    }
+  },
+  {
+    "model": "tours.Employee",
+    "pk": 1,
+    "fields": {
+      "first_name": "Анна",
+      "last_name": "Васильева",
+      "position": "Менеджер по продажам",
+      "email": "anna.vasilyeva@chinatours.com",
+      "phone": "+79161112233",
+      "hire_date": "2022-01-10",
+      "is_active": true
+    }
+  },
+  {
+    "model": "tours.Employee",
+    "pk": 2,
+    "fields": {
+      "first_name": "Сергей",
+      "last_name": "Михайлов",
+      "position": "Туроператор",
+      "email": "sergey.mikhailov@chinatours.com",
+      "phone": "+79164445566",
+      "hire_date": "2021-05-15",
+      "is_active": true
+    }
+  },
+  {
+    "model": "tours.Employee",
+    "pk": 3,
+    "fields": {
+      "first_name": "Мария",
+      "last_name": "Федорова",
+      "position": "Виза-менеджер",
+      "email": "maria.fedorova@chinatours.com",
+      "phone": "+79167778899",
+      "hire_date": "2022-03-20",
+      "is_active": true
+    }
+  },
+  {
+    "model": "tours.Employee",
+    "pk": 4,
+    "fields": {
+      "first_name": "Александр",
+      "last_name": "Николаев",
+      "position": "Гид по Китаю",
+      "email": "alex.nikolaev@chinatours.com",
+      "phone": "+79169990011",
+      "hire_date": "2021-11-05",
+      "is_active": false
+    }
+  },
+  {
+    "model": "tours.Employee",
+    "pk": 5,
+    "fields": {
+      "first_name": "Татьяна",
+      "last_name": "Кузнецова",
+      "position": "Бухгалтер",
+      "email": "tatyana.kuznetsova@chinatours.com",
+      "phone": "+79162223344",
+      "hire_date": "2020-09-01",
+      "is_active": true
+    }
+  },
+  {
+    "model": "tours.ChinaRegion",
+    "pk": 1,
+    "fields": {
+      "name": "Пекин",
+      "description": "Столичный регион Китая с богатой историей"
+    }
+  },
+  {
+    "model": "tours.ChinaRegion",
+    "pk": 2,
+    "fields": {
+      "name": "Шанхай",
+      "description": "Крупнейший финансовый и торговый центр Китая"
+    }
+  },
+  {
+    "model": "tours.ChinaRegion",
+    "pk": 3,
+    "fields": {
+      "name": "Гуандун",
+      "description": "Южный регион с субтропическим климатом"
+    }
+  },
+  {
+    "model": "tours.ChinaRegion",
+    "pk": 4,
+    "fields": {
+      "name": "Сычуань",
+      "description": "Регион с уникальной кухней и природными достопримечательностями"
+    }
+  },
+  {
+    "model": "tours.ChinaRegion",
+    "pk": 5,
+    "fields": {
+      "name": "Юньнань",
+      "description": "Регион с этническим разнообразием и красивыми пейзажами"
+    }
+  },
+  {
+    "model": "tours.ChinaCity",
+    "pk": 1,
+    "fields": {
+      "name": "Пекин",
+      "region": 1
+    }
+  },
+  {
+    "model": "tours.ChinaCity",
+    "pk": 2,
+    "fields": {
+      "name": "Шанхай",
+      "region": 2
+    }
+  },
+  {
+    "model": "tours.ChinaCity",
+    "pk": 3,
+    "fields": {
+      "name": "Гуанчжоу",
+      "region": 3
+    }
+  },
+  {
+    "model": "tours.ChinaCity",
+    "pk": 4,
+    "fields": {
+      "name": "Чэнду",
+      "region": 4
+    }
+  },
+  {
+    "model": "tours.ChinaCity",
+    "pk": 5,
+    "fields": {
+      "name": "Куньмин",
+      "region": 5
+    }
+  },
+  {
+    "model": "tours.Tour",
+    "pk": 1,
+    "fields": {
+      "name": "Классический Китай",
+      "description": "Тур по основным достопримечательностям Пекина и Шанхая",
+      "start_date": "2023-06-10",
+      "end_date": "2023-06-20",
+      "duration_days": 10,
+      "max_participants": 15,
+      "price": "1200.00",
+      "category": "Cultural",
+      "season": "Summer",
+      "difficulty_level": 2,
+      "is_active": true
+    }
+  },
+  {
+    "model": "tours.Tour",
+    "pk": 2,
+    "fields": {
+      "name": "Южные провинции",
+      "description": "Экскурсии по Гуанчжоу и окрестностям",
+      "start_date": "2023-07-05",
+      "end_date": "2023-07-15",
+      "duration_days": 10,
+      "max_participants": 12,
+      "price": "1500.00",
+      "category": "Adventure",
+      "season": "Summer",
+      "difficulty_level": 3,
+      "is_active": true
+    }
+  },
+  {
+    "model": "tours.Tour",
+    "pk": 3,
+    "fields": {
+      "name": "Гастрономический тур по Сычуань",
+      "description": "Знакомство с острой кухней Сычуани",
+      "start_date": "2023-09-01",
+      "end_date": "2023-09-08",
+      "duration_days": 7,
+      "max_participants": 8,
+      "price": "1800.00",
+      "category": "VIP",
+      "season": "Autumn",
+      "difficulty_level": 1,
+      "is_active": true
+    }
+  },
+  {
+    "model": "tours.Tour",
+    "pk": 4,
+    "fields": {
+      "name": "Зимний фестиваль в Харбине",
+      "description": "Посещение знаменитого ледового фестиваля",
+      "start_date": "2024-01-15",
+      "end_date": "2024-01-22",
+      "duration_days": 7,
+      "max_participants": 20,
+      "price": "1350.00",
+      "category": "Festival",
+      "season": "Winter",
+      "difficulty_level": 2,
+      "is_active": true
+    }
+  },
+  {
+    "model": "tours.Tour",
+    "pk": 5,
+    "fields": {
+      "name": "По Великому Шелковому пути",
+      "description": "Исторический тур по древним городам",
+      "start_date": "2023-10-10",
+      "end_date": "2023-10-25",
+      "duration_days": 15,
+      "max_participants": 10,
+      "price": "2500.00",
+      "category": "VIP",
+      "season": "Autumn",
+      "difficulty_level": 4,
+      "is_active": true
+    }
+  },
+  {
+    "model": "tours.Hotel",
+    "pk": 1,
+    "fields": {
+      "name": "The Ritz-Carlton Beijing",
+      "address": "83A Jian Guo Road, Chaoyang District, Пекин",
+      "city": 1,
+      "star_rating": 5,
+      "contact_phone": "+86 10 5908 8888",
+      "email": "reservations.ritzbeijing@ritzcarlton.com",
+      "is_active": true
+    }
+  },
+  {
+    "model": "tours.Hotel",
+    "pk": 2,
+    "fields": {
+      "name": "Peace Hotel Shanghai",
+      "address": "20 Nanjing Road East, Шанхай",
+      "city": 2,
+      "star_rating": 5,
+      "contact_phone": "+86 21 6321 6888",
+      "email": "reservation@peacehotel.com.cn",
+      "is_active": true
+    }
+  },
+  {
+    "model": "tours.Hotel",
+    "pk": 3,
+    "fields": {
+      "name": "Guangzhou Marriott Hotel Tianhe",
+      "address": "228 Tianhe Road, Гуанчжоу",
+      "city": 3,
+      "star_rating": 4,
+      "contact_phone": "+86 20 3801 8888",
+      "email": "reservations.guangzhoumarriott@marriott.com",
+      "is_active": true
+    }
+  },
+  {
+    "model": "tours.Hotel",
+    "pk": 4,
+    "fields": {
+      "name": "Tibet Hotel Chengdu",
+      "address": "10 South Renmin Road, Чэнду",
+      "city": 4,
+      "star_rating": 4,
+      "contact_phone": "+86 28 8558 3333",
+      "email": "reservation@tibethotel.com",
+      "is_active": true
+    }
+  },
+  {
+    "model": "tours.Hotel",
+    "pk": 5,
+    "fields": {
+      "name": "Green Lake Hotel Kunming",
+      "address": "6 Cuihu South Road, Куньмин",
+      "city": 5,
+      "star_rating": 4,
+      "contact_phone": "+86 871 6316 8888",
+      "email": "reservation@greenlakehotel.com",
+      "is_active": true
+    }
+  },
+  {
+    "model": "tours.VisaType",
+    "pk": 1,
+    "fields": {
+      "name": "Туристическая виза (L)",
+      "description": "Однократный въезд на 30 дней",
+      "processing_days": 5,
+      "validity_months": 3,
+      "entries_allowed": 1,
+      "price": "150.00"
+    }
+  },
+  {
+    "model": "tours.VisaType",
+    "pk": 2,
+    "fields": {
+      "name": "Бизнес виза (M)",
+      "description": "Многократный въезд на 90 дней",
+      "processing_days": 7,
+      "validity_months": 12,
+      "entries_allowed": 10,
+      "price": "350.00"
+    }
+  },
+  {
+    "model": "tours.VisaType",
+    "pk": 3,
+    "fields": {
+      "name": "Групповая туристическая виза",
+      "description": "Для групп от 5 человек",
+      "processing_days": 7,
+      "validity_months": 3,
+      "entries_allowed": 1,
+      "price": "120.00"
+    }
+  },
+  {
+    "model": "tours.VisaType",
+    "pk": 4,
+    "fields": {
+      "name": "Транзитная виза (G)",
+      "description": "Для транзита через Китай",
+      "processing_days": 3,
+      "validity_months": 1,
+      "entries_allowed": 1,
+      "price": "80.00"
+    }
+  },
+  {
+    "model": "tours.VisaType",
+    "pk": 5,
+    "fields": {
+      "name": "VIP виза",
+      "description": "Ускоренное оформление с консьерж-сервисом",
+      "processing_days": 2,
+      "validity_months": 6,
+      "entries_allowed": 2,
+      "price": "500.00"
+    }
+  },
+  {
+    "model": "tours.Booking",
+    "pk": 1,
+    "fields": {
+      "client": 1,
+      "tour": 1,
+      "employee": 1,
+      "booking_date": "2023-04-15T10:30:00Z",
+      "status": "Confirmed",
+      "total_price": "1200.00",
+      "discount_amount": "100.00",
+      "payment_status": "Paid",
+      "special_requests": "Нужен номер на высоком этаже"
+    }
+  },
+  {
+    "model": "tours.Booking",
+    "pk": 2,
+    "fields": {
+      "client": 2,
+      "tour": 3,
+      "employee": 2,
+      "booking_date": "2023-05-20T14:15:00Z",
+      "status": "Confirmed",
+      "total_price": "1800.00",
+      "discount_amount": "0.00",
+      "payment_status": "Partial",
+      "special_requests": "Вегетарианское питание"
+    }
+  },
+  {
+    "model": "tours.Booking",
+    "pk": 3,
+    "fields": {
+      "client": 3,
+      "tour": 2,
+      "employee": 1,
+      "booking_date": "2023-06-01T11:45:00Z",
+      "status": "Pending",
+      "total_price": "1500.00",
+      "discount_amount": "150.00",
+      "payment_status": "Unpaid",
+      "special_requests": ""
+    }
+  },
+  {
+    "model": "tours.Booking",
+    "pk": 4,
+    "fields": {
+      "client": 4,
+      "tour": 4,
+      "employee": 3,
+      "booking_date": "2023-07-10T09:20:00Z",
+      "status": "Confirmed",
+      "total_price": "1350.00",
+      "discount_amount": "0.00",
+      "payment_status": "Paid",
+      "special_requests": "Нужна помощь с визой"
+    }
+  },
+  {
+    "model": "tours.Booking",
+    "pk": 5,
+    "fields": {
+      "client": 5,
+      "tour": 5,
+      "employee": 2,
+      "booking_date": "2023-08-05T16:30:00Z",
+      "status": "Confirmed",
+      "total_price": "2500.00",
+      "discount_amount": "200.00",
+      "payment_status": "Paid",
+      "special_requests": "Индивидуальный гид"
+    }
+  },
+  {
+    "model": "tours.Visa",
+    "pk": 1,
+    "fields": {
+      "client": 1,
+      "visa_type": 1,
+      "status": "Approved",
+      "application_date": "2023-05-01",
+      "approval_date": "2023-05-06",
+      "expiry_date": "2023-08-06",
+      "notes": "Виза готова к выдаче"
+    }
+  },
+  {
+    "model": "tours.Visa",
+    "pk": 2,
+    "fields": {
+      "client": 2,
+      "visa_type": 3,
+      "status": "Processing",
+      "application_date": "2023-06-10",
+      "approval_date": null,
+      "expiry_date": null,
+      "notes": "Ожидаем документы от клиента"
+    }
+  },
+  {
+    "model": "tours.Visa",
+    "pk": 3,
+    "fields": {
+      "client": 4,
+      "visa_type": 5,
+      "status": "Application",
+      "application_date": "2023-07-15",
+      "approval_date": null,
+      "expiry_date": null,
+      "notes": "VIP обработка"
+    }
+  },
+  {
+    "model": "tours.Visa",
+    "pk": 4,
+    "fields": {
+      "client": 3,
+      "visa_type": 1,
+      "status": "Rejected",
+      "application_date": "2023-05-20",
+      "approval_date": null,
+      "expiry_date": null,
+      "notes": "Недостаточно документов"
+    }
+  },
+  {
+    "model": "tours.Visa",
+    "pk": 5,
+    "fields": {
+      "client": 5,
+      "visa_type": 2,
+      "status": "Collected",
+      "application_date": "2023-04-01",
+      "approval_date": "2023-04-08",
+      "expiry_date": "2024-04-08",
+      "notes": "Клиент забрал паспорт"
+    }
+  },
+  {
     "model": "tours.Excursion",
     "pk": 1,
     "fields": {

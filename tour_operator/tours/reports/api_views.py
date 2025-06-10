@@ -13,11 +13,11 @@ from ..serializers import (
     TourThemeStatsSerializer
 )
 from django.db.models.functions import (
-    Round, ExtractDay, ExtractMonth, Coalesce, Concat, TruncMonth)
+    Round, Coalesce, Concat, TruncMonth)
 from django.db.models import (
     Subquery, OuterRef, Count,
     Avg, Sum, Case, When, IntegerField,
-    F, Value, Q, Min, Max, FloatField, CharField, ExpressionWrapper
+    F, Value, Q, Min, Max, FloatField, CharField
 )
 from ..models import (
     Client, Booking, Tour, TourExcursion, Review, Employee,
@@ -83,7 +83,7 @@ class EmployeeRatingsView(APIView):
                 Case(
                     When(booking__status='Confirmed', then=1),
                     default=0,
-                    output_field=FloatField()
+                    output_field=IntegerField()
                 )
             ),
             avg_rating=Avg('booking__client__review__rating')
@@ -93,7 +93,7 @@ class EmployeeRatingsView(APIView):
                     Case(
                         When(booking__tour__season='High', then='booking__tour'),
                         distinct=True,
-                        output_field=FloatField()
+                        output_field=IntegerField()
                     )
                 ),
                 0
